@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klasemen Alam SPATIAL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1874&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+            color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: scroll;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInSlideUp 1s ease-out forwards;
+        }
+        h1 {
+            text-align: center;
+            color: #1a5276;
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInSlideUp 1s ease-out 0.5s forwards;
+        }
+        h1 .emoji {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        h1:hover .emoji {
+            animation: pulse 1s infinite;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 3px solid rgba(255, 255, 255, 0.7);
+            animation: fadeInSlideUp 1s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+        #myChart { margin-top: 30px; }
+
+        /* Tabel baru */
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            animation: fadeInSlideUp 1s ease-out 1s forwards;
+        }
+        .ranking-table th, .ranking-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .ranking-table th {
+            background-color: #1a5276;
+            color: #fff;
+            font-weight: 700;
+        }
+        .ranking-table tr:hover {
+            background-color: rgba(26, 82, 118, 0.1);
+        }
+        .up { color: green; font-weight: bold; }
+        .down { color: red; font-weight: bold; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="logo.jpg" alt="Logo SPATIAL" class="logo">
+        <h1><span class="emoji">🌿</span> Klasemen SPATIAL <span class="emoji">🌿</span></h1>
+        <canvas id="myChart"></canvas>
+
+        <!-- Tabel lama (hidden) -->
+        <table style="display: none;">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Tim</th>
+                    <th>Main</th>
+                    <th>Menang</th>
+                    <th>Seri</th>
+                    <th>Kalah</th>
+                    <th>Poin</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>Geo Kusala</td><td>5</td><td>4</td><td>1</td><td>0</td><td>64</td></tr>
+                <tr><td>2</td><td>Aero Netra</td><td>5</td><td>4</td><td>0</td><td>1</td><td>55</td></tr>
+                <tr><td>3</td><td>Jalacise</td><td>5</td><td>3</td><td>1</td><td>1</td><td>66</td></tr>
+                <tr><td>4</td><td>Vajra Vium</td><td>5</td><td>3</td><td>0</td><td>2</td><td>92</td></tr>
+                <tr><td>5</td><td>Dhatu Stream</td><td>5</td><td>2</td><td>1</td><td>2</td><td>47</td></tr>
+                <tr><td>6</td><td>Infra Luhita</td><td>5</td><td>2</td><td>0</td><td>3</td><td>68</td></tr>
+                <tr><td>7</td><td>Loka Map</td><td>5</td><td>1</td><td>1</td><td>3</td><td>82</td></tr>
+                <tr><td>8</td><td>Nira Nautika</td><td>5</td><td>1</td><td>0</td><td>4</td><td>58</td></tr>
+                <tr><td>9</td><td>Giridera</td><td>5</td><td>0</td><td>0</td><td>5</td><td>52</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Tabel Klasemen Baru -->
+        <table id="rankingTable" class="ranking-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Status</th>
+                    <th>Gugus</th>
+                    <th>Tugas 1</th>
+                    <th>Tugas 2</th>
+                    <th>Tugas 3</th>
+                    <th>Tugas 4</th>
+                    <th>Tugas 5</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        // ===== Grafik Klasemen Lama =====
+        const table = document.querySelector('table');
+        const rows = table.querySelectorAll('tbody tr');
+        
+        const labels = [];
+        const data = [];
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            labels.push(cells[1].innerText);
+            data.push(parseInt(cells[6].innerText));
+        });
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Poin Tim',
+                    data: data,
+                    backgroundColor: [
+                        '#27ae60', '#2980b9', '#8e44ad', '#f39c12',
+                        '#d35400', '#c0392b', '#16a085', '#34495e', '#7f8c8d'
+                    ],
+                    borderColor: 'rgba(255, 255, 255, 0.5)',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Peringkat Tim di Alam SPATIAL',
+                        font: { size: 20, family: 'Quicksand' },
+                        color: '#1a5276'
+                    }
+                }
+            }
+        });
+
+        // ===== TABEL KLASMEN BARU =====
+        const teams = [
+            { name: "Geo Kusala", tugas: [64, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
+            { name: "Aero Netra", tugas: [55, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
+            { name: "Jalacise", tugas: [66, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
+            { name: "Vajra Vium", tugas: [92, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
+            { name: "Dhatu Stream", tugas: [47, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
+            { name: "Infra Luhita", tugas: [68, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
+            { name: "Loka Map", tugas: [82, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
+            { name: "Nira Nautika", tugas: [58, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
+            { name: "Giridera", tugas: [52, "Coming soon", "Coming soon", "Coming soon", "Coming soon"] }
+        ];
+
+        // Hitung total hanya jika nilai adalah angka valid
+        teams.forEach(team => {
+            team.total = team.tugas.reduce((sum, val) => {
+                return sum + (typeof val === 'number' && !isNaN(val) ? val : 0);
+            }, 0);
+        });
+
+        // Urutkan berdasarkan total poin tertinggi
+        teams.sort((a, b) => b.total - a.total);
+
+        const tbody = document.querySelector("#rankingTable tbody");
+        teams.forEach((team, index) => {
+            const tr = document.createElement("tr");
+            const statusIcon = index % 2 === 0 ? "⬆️" : "⬇️";
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${statusIcon}</td>
+                <td>${team.name}</td>
+                ${team.tugas.map(t => `<td>${t}</td>`).join('')}
+                <td><strong>${team.total}</strong></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    </script>
+</body>
+</html>
