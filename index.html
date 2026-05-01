@@ -11,7 +11,40 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Dekorasi bumi dan bulu phoenix */
+        .earth-deco {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 2.5em;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
+            z-index: 2;
+        }
+        .phoenix-feather {
+            position: absolute; 
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            z-index: 2;
+            animation: featherFloat 3s infinite ease-in-out;
+        }
+        @keyframes featherFloat {
+            0%, 100% { transform: translateY(0) rotate(-10deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        .nature-icons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 10px;
+        }
+        .nature-icons span {
+            font-size: 1.7em;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.12));
+        }
     @keyframes fadeInSlideUp {
             from {
                 opacity: 0;
@@ -32,7 +65,7 @@
             }
 
             50% {
-                transform: scale(1.15);
+                transform: scale(1.15); 
             }
         }
 
@@ -189,122 +222,238 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="klasemenPoin.js"></script>
+    <script src="authEmails.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <img src="logo.jpg" alt="Logo SPATIAL" class="logo">
-        <h1><span class="emoji">🌿</span> Klasemen Gugus SPATIAL<span class="emoji">🌿</span></h1>
+    <span class="earth-deco">🌍</span>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Feather_icon_orange.svg" alt="Phoenix Feather" class="phoenix-feather">
+    <div class="container py-4" style="background-image: linear-gradient(135deg, rgba(34,139,34,0.08) 0%, rgba(135,206,250,0.08) 100%), url('https://www.transparenttextures.com/patterns/leaf.png'); background-repeat: repeat;">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="logo.jpg" alt="Logo" class="logo">
+                    <div>
+                        <h2 class="mb-0">Klasemen Gugus SPATIAL</h2>
+                        <small class="text-muted">Departemen Teknologi Kebumian</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button id="editScoresBtn" class="btn btn-sm btn-outline-primary">Edit Scores</button>
+                    <span id="authBadge" class="badge bg-success ms-2 d-none"></span>
+                    <button id="logoutBtn" class="btn btn-sm btn-outline-secondary d-none">Logout</button>
+                    <div class="text-end fs-4">🌍</div>
+                </div>
+            </div>
+            <div class="card-body">
+                
         <canvas id="myChart"></canvas>
 
-        <!-- Tabel lama dihapus, data diambil dari file klasemenPoin.js -->
-
-        <!-- Tabel Klasemen Baru -->
-        <table id="rankingTable" class="ranking-table">
+            <!-- Tabel Klasemen Baru -->
+            <div class="table-responsive mt-3">
+            <table id="rankingTable" class="table table-striped table-hover ranking-table align-middle">
             <thead>
                 <tr>
                     <th>No.</th>
                     <th>Status</th>
                     <th>Gugus</th>
-                    <th>Tugas 1</th>
-                    <th>Tugas 2</th>
-                    <th>Tugas 3</th>
-                    <th>Tugas 4</th>
-                    <th>Tugas 5</th>
+                    <th>Instagram</th>
+                    <th> Poster </th>
+                    <th>Video</th>
+                    <th>Orientering</th>
+                    <th>Pentas Seni</th>
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
-    </div>
+                </div>
+            </div>
+        </div>
+        </div>
 
+        </div>
+
+        <!-- Edit modal + Login-by-email modal -->
+        <div class="modal fade" id="editScoresModal" tabindex="-1" aria-labelledby="editScoresModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editScoresModalLabel">Edit Skor (Tugas 1-5)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body"><div id="editorForm"></div></div>
+              <div class="modal-footer">
+                <button type="button" id="saveScoresBtn" class="btn btn-primary">Simpan</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="emailLoginModal" tabindex="-1" aria-labelledby="emailLoginModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="emailLoginModalLabel">Masuk dengan Email</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <label class="form-label">Email</label>
+                <input id="loginEmailInput" type="email" class="form-control" placeholder="email Anda">
+                <div class="form-text">Hanya email tertentu yang dapat mengubah skor.</div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="emailLoginBtn" class="btn btn-primary">Masuk</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ===== Grafik Klasemen Lama dari klasemenPoin.js =====
-        const labels = klasemenPoin.map(t => t.name);
-        const data = klasemenPoin.map(t => t.poin);
+    (function(){
+        try{
+            console.log('SPATIAL script start');
+        const STORAGE_KEY = 'spatialDetail_v1';
+        const AUTH_KEY = 'spatial_editor_email_v1';
 
+        function loadDetail(){
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if(raw){
+                try{ return JSON.parse(raw); } catch(e){ console.warn('invalid stored detail', e); }
+            }
+            return JSON.parse(JSON.stringify(klasemenDetail || []));
+        }
+        function saveDetail(data){
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        let detailData = loadDetail();
+
+        // chart setup
         const ctx = document.getElementById('myChart').getContext('2d');
-        const barColors = [
-            '#27ae60', '#2980b9', '#8e44ad', '#f39c12',
-            '#d35400', '#c0392b', '#16a085', '#34495e', '#7f8c8d'
-        ];
-        const barColorsHover = [
-            '#43e97b', '#5dade2', '#bb8fce', '#ffe082',
-            '#ffb074', '#ff7675', '#48c9b0', '#85929e', '#b2bec3'
-        ];
+        const barColors = ['#27ae60', '#2980b9', '#8e44ad', '#f39c12', '#d35400', '#c0392b', '#16a085', '#34495e', '#7f8c8d'];
+        const barColorsHover = ['#43e97b', '#5dade2', '#bb8fce', '#ffe082', '#ffb074', '#ff7675', '#48c9b0', '#85929e', '#b2bec3'];
+
+        function totalsFromDetail(data){
+            return data.map(t => t.tugas.slice(0,4).reduce((s,v)=> s + (Number(v)||0), 0));
+        }
+
         const chart = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Poin Tim',
-                    data: data,
-                    backgroundColor: barColors,
-                    borderColor: 'rgba(255, 255, 255, 0.5)',
-                    borderWidth: 2,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    title: {
-                        display: true,
-                        text: 'Peringkat Gugus SPATIAL',
-                        font: { size: 20, family: 'Quicksand' },
-                        color: '#1a5276'
-                    },
-                    tooltip: {
-                        enabled: true,
-                        external: function(context) {
-                            // default tooltip
-                        }
-                    }
-                },
-                hover: {
-                    mode: 'nearest',
-                    intersect: true
-                },
-                onHover: (event, chartElement) => {
-                    const dataset = chart.data.datasets[0];
-                    if (chartElement.length > 0) {
-                        const idx = chartElement[0].index;
-                        dataset.backgroundColor = barColors.map((color, i) => i === idx ? barColorsHover[i] : color);
-                        chart.update('none');
-                        event.native.target.style.cursor = 'pointer';
-                    } else {
-                        dataset.backgroundColor = barColors;
-                        chart.update('none');
-                        event.native.target.style.cursor = 'default';
-                    }
-                }
-            }
+            data: { labels: detailData.map(t=>t.name), datasets: [{ label: 'Poin Tim', data: totalsFromDetail(detailData), backgroundColor: barColors, borderColor: 'rgba(255,255,255,0.5)', borderWidth:2, borderRadius:8 }] },
+            options: { responsive:true }
         });
 
-        // ===== TABEL KLASMEN BARU dari klasemenPoin.js =====
-        // klasemenDetail diambil dari file klasemenPoin.js
-        const tbody = document.querySelector("#rankingTable tbody");
-        // Hitung total poin dari array tugas
-        const teams = klasemenDetail.map(team => ({
-            name: team.name,
-            tugas: team.tugas,
-            total: team.tugas.reduce((sum, val) => sum + (typeof val === 'number' && !isNaN(val) ? val : 0), 0)
-        }));
-        // Urutkan berdasarkan total poin tertinggi
-        teams.sort((a, b) => b.total - a.total);
-        teams.forEach((team, index) => {
-            const tr = document.createElement("tr");
-            const statusIcon = index % 2 === 0 ? "⬆️" : "⬇️";
-            tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${statusIcon}</td>
-                <td>${team.name}</td>
-                ${team.tugas.map(t => `<td>${t}</td>`).join('')}
-                <td><strong>${team.total}</strong></td>
-            `;
-            tbody.appendChild(tr);
-        });
+        function renderRankingTable(){
+            const tbody = document.querySelector('#rankingTable tbody');
+            tbody.innerHTML = '';
+            const teams = detailData.map(d => ({ name: d.name, tugas: d.tugas.slice(), total: d.tugas.slice(0,4).reduce((s,v)=> s + (Number(v)||0), 0) }));
+            teams.sort((a,b)=> b.total - a.total);
+            teams.forEach((team,i)=>{
+                const tr = document.createElement('tr');
+                const statusIcon = i % 2 === 0 ? '⬆️' : '⬇️';
+                tr.innerHTML = `
+                    <td>${i+1}</td>
+                    <td>${statusIcon}</td>
+                    <td>${team.name}</td>
+                    ${team.tugas.map(x=>`<td>${x}</td>`).join('')}
+                    <td><span class="badge bg-success">${team.total.toFixed(2)}</span></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateChartAndTable(){
+            chart.data.labels = detailData.map(t=>t.name);
+            chart.data.datasets[0].data = totalsFromDetail(detailData);
+            chart.update();
+            renderRankingTable();
+        }
+
+        updateChartAndTable();
+
+        // auth / editor wiring
+        const editBtn = document.getElementById('editScoresBtn');
+        const authBadge = document.getElementById('authBadge');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const editorForm = document.getElementById('editorForm');
+        const editModalEl = document.getElementById('editScoresModal');
+        const emailLoginModalEl = document.getElementById('emailLoginModal');
+        const bsEditModal = (typeof bootstrap !== 'undefined' && editModalEl) ? new bootstrap.Modal(editModalEl) : null;
+        const bsEmailModal = (typeof bootstrap !== 'undefined' && emailLoginModalEl) ? new bootstrap.Modal(emailLoginModalEl) : null;
+
+        function getAuthEmail(){ return sessionStorage.getItem(AUTH_KEY) || null; }
+        function isAuthEmail(){ const e = getAuthEmail(); return !!e; }
+        function setAuthUI(){ const e = getAuthEmail(); if(e){ authBadge.textContent = e; authBadge.classList.remove('d-none'); logoutBtn.classList.remove('d-none'); } else { authBadge.classList.add('d-none'); logoutBtn.classList.add('d-none'); } }
+        setAuthUI();
+
+        function openEditor(){
+            if(!editorForm) return;
+            const rows = detailData.map((team, ti)=>{
+                const inputs = team.tugas.map((val, tj)=> `<td><input type="number" class="form-control form-control-sm" data-team="${ti}" data-task="${tj}" value="${val}"></td>`).join('');
+                return `<tr><td>${ti+1}</td><td>${team.name}</td>${inputs}</tr>`;
+            }).join('');
+            editorForm.innerHTML = `
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless align-middle">
+                        <thead><tr><th>#</th><th>Nama Tim</th><th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+            if(bsEditModal) bsEditModal.show();
+        }
+
+        if(editBtn){
+            editBtn.addEventListener('click', ()=>{
+                if(isAuthEmail()){ openEditor(); }
+                else { if(bsEmailModal) bsEmailModal.show(); else alert('Login modal tidak tersedia'); }
+            });
+        }
+
+        // login by email
+        const emailLoginBtn = document.getElementById('emailLoginBtn');
+        if(emailLoginBtn){
+            emailLoginBtn.addEventListener('click', ()=>{
+                const input = document.getElementById('loginEmailInput');
+                const email = input && input.value ? input.value.trim().toLowerCase() : '';
+                if(!email){ alert('Masukkan email'); return; }
+                if(typeof allowedEmails !== 'undefined' && Array.isArray(allowedEmails) && allowedEmails.map(e=>e.toLowerCase()).includes(email)){
+                    sessionStorage.setItem(AUTH_KEY, email);
+                    setAuthUI();
+                    if(bsEmailModal) bsEmailModal.hide();
+                    input.value = '';
+                    openEditor();
+                } else {
+                    alert('Email tidak diizinkan untuk mengubah skor.');
+                }
+            });
+        }
+
+        if(logoutBtn){ logoutBtn.addEventListener('click', ()=>{ sessionStorage.removeItem(AUTH_KEY); setAuthUI(); }); }
+
+        // save edited scores
+        const saveBtn = document.getElementById('saveScoresBtn');
+        if(saveBtn){
+            saveBtn.addEventListener('click', ()=>{
+                if(!editorForm) return;
+                const inputs = editorForm.querySelectorAll('input[data-team]');
+                inputs.forEach(inp=>{
+                    const ti = Number(inp.dataset.team);
+                    const tj = Number(inp.dataset.task);
+                    const v = Number(inp.value);
+                    if(!isNaN(v)) detailData[ti].tugas[tj] = v; else detailData[ti].tugas[tj] = 0;
+                });
+                saveDetail(detailData);
+                updateChartAndTable();
+                if(bsEditModal) bsEditModal.hide();
+            });
+        }
+
+        console.log('SPATIAL script end');
+        }catch(err){ console.error('Script error', err); }
+    })();
     </script>
 </body>
 
