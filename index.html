@@ -221,6 +221,20 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Data klasemen langsung di HTML untuk memastikan selalu tersedia
+        const klasemenDetail = [
+            { name: 'Geo Kusala', tugas: [64, 89.1, 83.95, 1, "Coming Soon"] },
+            { name: 'Aero Netra', tugas: [55, 86.8, 79.71, 1, "Coming Soon"] },
+            { name: 'Jalacise', tugas: [66, 90.9, 88.17, 1, "Coming Soon"] },
+            { name: 'Vajra Vium', tugas: [92, 87.9, 82.04, 1, "Coming Soon"] },
+            { name: 'Dhatu Stream', tugas: [47, 86.3, 78.56, 1, "Coming Soon"] },
+            { name: 'Infra Luhita', tugas: [68, 81.4, 76.12, 2, "Coming Soon"] },
+            { name: 'Loka Map', tugas: [82, 85.6, 79.76, 1, "Coming Soon"] },
+            { name: 'Nira Nautika', tugas: [58, 91.15, 86.76, 1, "Coming Soon"] },
+            { name: 'Giridera', tugas: [52, 89.35, 80.71, 1, "Coming Soon"] }
+        ];
+    </script>
     <script src="klasemenPoin.js"></script>
     <script src="authEmails.js"></script>
 </head>
@@ -316,6 +330,10 @@
     (function(){
         try{
             console.log('SPATIAL script start');
+            console.log('klasemenDetail available:', typeof klasemenDetail !== 'undefined');
+            if(typeof klasemenDetail !== 'undefined'){
+                console.log('klasemenDetail length:', klasemenDetail.length);
+            }
         const STORAGE_KEY = 'spatialDetail_v1';
         const AUTH_KEY = 'spatial_editor_email_v1';
 
@@ -324,7 +342,9 @@
             if(raw){
                 try{ return JSON.parse(raw); } catch(e){ console.warn('invalid stored detail', e); }
             }
-            return JSON.parse(JSON.stringify(klasemenDetail || []));
+            // Gunakan klasemenDetail yang sudah didefinisikan di atas
+            console.log('Using klasemenDetail data, length:', klasemenDetail.length);
+            return JSON.parse(JSON.stringify(klasemenDetail));
         }
         function saveDetail(data){
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
